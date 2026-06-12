@@ -23,6 +23,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        with:
+          set-safe-directory: false
 
       - name: Runner info
         run: |
