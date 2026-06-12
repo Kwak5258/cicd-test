@@ -1,0 +1,44 @@
+name: windows-self-hosted-smoke
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    runs-on: [self-hosted, Windows, X64, local-test]
+    timeout-minutes: 10
+
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Runner info
+        run: |
+          hostname
+          whoami
+          $PSVersionTable.PSVersion
+          Get-Location
+
+      - name: Workspace check
+        run: |
+          Get-ChildItem -Force
+          if (-not (Test-Path .\README.md)) {
+            throw "README.md not found"
+          }
+
+      - name: Git info
+        run: |
+          git --version
+          git status --short
